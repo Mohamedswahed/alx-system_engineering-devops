@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Connects to server using  ~/.ssh/school
+
+ssh ubuntu -i ~/.ssh/school
