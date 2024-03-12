@@ -1,6 +1,14 @@
-# fix nginx to accept and serve more requests
+# This manuscript increases the amount of traffic an Nginx server can handle
 
-exec {'modify max open files limit setting':
-  command => 'sed -i "s/15/10000/" /etc/default/nginx && sudo service nginx restart',
-  path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games',
+# Increase the ULIMIT of the default file
+file { 'fix-for-nginx':
+  ensure  => 'file',
+  path    => '/etc/default/nginx',
+  content => inline_template('<%= File.read("/etc/default/nginx").gsub(/15/, "4096") %>'),
+}
+
+# Restart Nginx
+-> exec { 'nginx-restart':
+  command => 'nginx restart',
+  path    => '/etc/init.d/',
 }
